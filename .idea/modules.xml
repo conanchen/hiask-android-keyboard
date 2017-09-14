@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hiask-android-keyboard.iml" filepath="$PROJECT_DIR$/hiask-android-keyboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keyboard/keyboard.iml" filepath="$PROJECT_DIR$/keyboard/keyboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keyboard-apigrpc/keyboard-apigrpc.iml" filepath="$PROJECT_DIR$/keyboard-apigrpc/keyboard-apigrpc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keyboard-apirest/keyboard-apirest.iml" filepath="$PROJECT_DIR$/keyboard-apirest/keyboard-apirest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keyboard-dbroom/keyboard-dbroom.iml" filepath="$PROJECT_DIR$/keyboard-dbroom/keyboard-dbroom.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keyboard-repository/keyboard-repository.iml" filepath="$PROJECT_DIR$/keyboard-repository/keyboard-repository.iml" />
+      <module fileurl="file://$PROJECT_DIR$/keyboard-usecase/keyboard-usecase.iml" filepath="$PROJECT_DIR$/keyboard-usecase/keyboard-usecase.iml" />
+    </modules>
+  </component>
+</project>

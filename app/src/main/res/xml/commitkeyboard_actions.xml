@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_recents"
+        icon="@android:drawable/presence_video_busy"
+        title="Recents" />
+    <tab
+        id="@+id/tab_favorites"
+        icon="@android:drawable/presence_video_busy"
+        title="Favorites" />
+    <tab
+        id="@+id/tab_nearby"
+        icon="@android:drawable/presence_video_busy"
+        title="Nearby" />
+    <tab
+        id="@+id/tab_friends"
+        icon="@android:drawable/presence_video_busy"
+        title="Friends" />
+    <tab
+        id="@+id/tab_food"
+        icon="@android:drawable/presence_video_busy"
+        title="Food" />
+    <tab
+        id="@+id/tab_food1"
+        icon="@android:drawable/presence_video_busy"
+        title="Food" />
+    <tab
+        id="@+id/tab_friends1"
+        icon="@android:drawable/presence_video_busy"
+        title="Friends" />
+    <tab
+        id="@+id/tab_food2"
+        icon="@android:drawable/presence_video_busy"
+        title="Food" />
+    <tab
+        id="@+id/tab_food3"
+        icon="@android:drawable/presence_video_busy"
+        title="Food" />
+</tabs>

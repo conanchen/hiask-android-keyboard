@@ -1,0 +1,270 @@
+buildscript {
+    dependencies {
+        classpath "com.jakewharton:butterknife-gradle-plugin:$BUTTERKNIFE_VERSION"
+    }
+}
+apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.jakewharton.butterknife'
+
+repositories {
+    maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+}
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://maven.google.com' }
+        maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+    }
+
+    dependencies {
+        classpath "me.tatarka:gradle-retrolambda:$tatarka_version"
+    }
+}
+
+android {
+    signingConfigs {
+        debug {
+            storeFile file('./debug.keystore')
+        }
+    }
+
+    publishNonDefault true
+
+
+    compileSdkVersion rootProject.COMPILE_SDK_VERSION
+    buildToolsVersion rootProject.ANDROID_BUILD_TOOLS_VERSION
+
+    lintOptions {
+        abortOnError false
+    }
+
+    // For retrolambda
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+    defaultConfig {
+        minSdkVersion rootProject.MIN_SDK_VERSION
+        targetSdkVersion rootProject.TARGET_SDK_VERSION
+        versionCode 1
+        versionName "1.0"
+        signingConfig signingConfigs.debug
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        // Enable MultiDexing:  https://developer.android.com/tools/building/multidex.html
+        multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+
+        ndk { //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "arm64-v8a", "x86_64"
+        }
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+            buildConfigField 'String', 'ENVIRONMENT', '"PRODUCTION"'
+            buildConfigField "boolean", "USE_CRASHLYTICS", "true"
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+            buildConfigField 'String', 'AMAPKEY', '"4d83adc4a7dea5315096f8629a8c9a02"'
+            buildConfigField 'String', 'ENVIRONMENT', '"DEBUG"'
+            buildConfigField "boolean", "USE_CRASHLYTICS", "true"
+            ext.alwaysUpdateBuildId = false
+        }
+    }
+    productFlavors {
+/*
+        //https://blog.synyx.de/2016/08/android-building-apks-for-different-environments-using-build-types-and-product-flavors/
+        local {
+            debuggable true
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".local"
+            buildConfigField 'String', 'ENVIRONMENT', '"LOCAL"'
+            buildConfigField 'String', 'SYNC_GATEWAY_URL', '"http://127.0.0.1:4984/sync_gateway/"'
+        }
+
+        dev { // build types may not start with 'test'
+            debuggable true
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".dev"
+            buildConfigField 'String', 'ENVIRONMENT', '"DEV"'
+            buildConfigField 'String', 'SYNC_GATEWAY_URL', '"http://10.9.42.203:4984/hiask/"'
+        }
+
+        qa {
+            debuggable true
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".qa"
+            buildConfigField 'String', 'ENVIRONMENT', '"QA"'
+            buildConfigField 'String', 'SYNC_GATEWAY_URL', '"http://10.9.42.203:4984/hiask/"'
+        }
+        prod {
+            debuggable true
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".prod"
+            buildConfigField 'String', 'ENVIRONMENT', '"QA"'
+            buildConfigField 'String', 'SYNC_GATEWAY_URL', '"http://10.9.42.203:4984/hiask/"'
+        }
+*/
+    }
+
+    dexOptions {
+        javaMaxHeapSize "2048M"
+        preDexLibraries = false
+    }//end dexOptions
+
+    dataBinding {
+        enabled = false
+    }
+
+    // workaround for "duplicate files during packaging of APK" issue:
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/services/javax.annotation.processing.Processor' // butterknife
+    }
+
+
+    task grantPermissions(type: Exec, dependsOn: 'installDebugAndroidTest') {
+        executable "sh"
+        args "-c", "\$ANDROID_HOME/platform-tools/adb shell pm grant com.doctoror.rxcursorloader.test android.permission.READ_EXTERNAL_STORAGE"
+    }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name.startsWith('connectedDebugAndroidTest')) {
+            task.dependsOn grantPermissions
+        }
+    }
+
+
+}
+
+project.android.buildTypes.all { buildType ->
+    buildType.javaCompileOptions.annotationProcessorOptions.arguments =
+            [
+                    validateEpoxyModelUsage     : String.valueOf(buildType.name == 'debug'),
+                    requireHashCodeInEpoxyModels: "true",
+                    requireAbstractEpoxyModels  : "true"
+            ]
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+
+    debugCompile project(path: ':keyboard-usecase', configuration: 'debug')
+    releaseCompile project(path: ':keyboard-usecase', configuration: 'release')
+
+    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIBS_VERSION"
+    compile "com.android.support:support-v13:$ANDROID_SUPPORT_LIBS_VERSION"
+    compile "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+    compile "com.android.support:design:$ANDROID_SUPPORT_LIBS_VERSION"
+    compile "com.android.support:support-annotations:$ANDROID_SUPPORT_LIBS_VERSION"
+    compile "com.android.support:support-emoji-bundled:$ANDROID_SUPPORT_LIBS_VERSION"
+    compile "com.android.support:support-emoji-appcompat:$ANDROID_SUPPORT_LIBS_VERSION"
+
+    compile "android.arch.lifecycle:runtime:$arch_version"
+    compile "android.arch.lifecycle:extensions:$arch_version"
+    compile "android.arch.lifecycle:reactivestreams:$arch_version"
+    annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
+
+
+    compile "io.reactivex.rxjava2:rxandroid:$RXANDROID_VERSION"
+
+    compile "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
+
+    compile "com.airbnb.android:epoxy:$AIRBNB_EPOXY_LIBS_VERSION"
+    compile "com.airbnb.android:lottie:$LOTTIE_VERSION"
+    annotationProcessor "com.airbnb.android:epoxy-processor:$AIRBNB_EPOXY_LIBS_VERSION"
+
+    compile "com.google.dagger:dagger:$dagger_version"
+    compile "com.google.dagger:dagger-android:$dagger_version"
+    compile "com.google.dagger:dagger-android-support:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
+
+    compile "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+    annotationProcessor "com.github.bumptech.glide:compiler:$GLIDE_VERSION"
+
+    compile "com.jakewharton.timber:timber:$timber_version"
+
+    compile "pub.devrel:easypermissions:$easypermissions_versioin"
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile "com.android.support:support-annotations:$ANDROID_SUPPORT_LIBS_VERSION"
+    androidTestCompile "com.android.support.test:runner:0.5"
+    androidTestCompile "com.android.support.test:rules:0.5"
+
+}
+
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+
+
+def version_code = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+def version_name = "${versionMajor}.${versionMinor}.${versionPatch}"
+
+ext {
+    // Where you will see your artifact in Bintray's web interface
+    // The "bintrayName" should match the name of the Bintray repro.
+    bintrayRepo = 'maven'
+    bintrayName = 'keyboard' // Has to be same as your library module name
+
+    // Maven metadata
+    publishedGroupId = 'io.github.conanchen'
+    libraryName = 'hiask-android-keyboard'
+    // Save yourself a head ache, and set this equal to the name of the Android Studio library
+    // module. The artifact name needs to match the name of the library.
+    artifact = 'keyboard' // Has to be same as your library module name
+
+    // Your github repo link
+    siteUrl = 'https://github.com/conanchen/hiask-android-keyboard'
+    gitUrl = 'https://github.com/conanchen/hiask-android-keyboard.git'
+
+    libraryDescription = '一个内置于安卓聊天应用的漂亮键盘'
+    libraryVersion = version_name
+
+    developerId = 'conan8chan'
+    developerName = 'Conan Chan'
+    developerEmail = 'conan8chan@yahoo.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+//apply from: 'https://raw.githubusercontent.com/kailash09dabhi/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/kailash09dabhi/JCenter/master/bintrayv1.gradle'
+//http://eliasbagley.github.io/android/2015/10/23/gradle-script-for-bintray-upload.html

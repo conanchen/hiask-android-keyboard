@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/keyboard_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_gravity="top"
+        android:layout_margin="0dp"
+        android:fillViewport="true"
+        android:theme="@style/Chat.Action.Design.TabLayout"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed">
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_assistant_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_frequent" />
+
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_keyboard_voice_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_voice" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_photo_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_image" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_photo_camera_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_photo" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_card_giftcard_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_gift" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_gif_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_gif" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_insert_emoticon_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_emoji" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:icon="@drawable/ic_add_circle_outline_black_24dp"
+            android:padding="0dp"
+            android:tag="tabitem_more" />
+    </android.support.design.widget.TabLayout>
+
+    <LinearLayout
+        android:id="@+id/edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="?android:attr/colorPrimary"
+        android:orientation="horizontal">
+
+        <org.ditto.keyboard.CommitEditText
+            android:id="@+id/edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:hint="Images!" />
+
+        <ImageView
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:src="@android:drawable/ic_menu_send" />
+    </LinearLayout>
+
+    <org.ditto.keyboard.util.NonSwipeableViewPager
+        android:id="@+id/keyboard_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="bottom"
+        android:visibility="gone">
+
+    </org.ditto.keyboard.util.NonSwipeableViewPager>
+
+
+</LinearLayout>

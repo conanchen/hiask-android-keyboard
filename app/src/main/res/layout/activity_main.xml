@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.ditto.inappkeyboard.MainActivity">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_weight="8" />
+
+    <Button
+        android:id="@+id/button_openfragmentactivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="打开fragment activity测试" />
+
+    <android.support.text.emoji.widget.EmojiAppCompatTextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="text" />
+
+    <org.ditto.keyboard.CommitKeyboard
+        android:id="@+id/keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/edit"
+        android:layout_weight="1"
+        app:bb_tabXmlResource="@xml/commitkeyboard_actions" />
+
+</LinearLayout>
